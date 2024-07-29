@@ -1,0 +1,23 @@
+{
+  "name": "pigma",
+  "module": "index.ts",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "turbo": "^2.0.9"
+  },
+  "packageManager":"bun@1.1.7"
+
+}
