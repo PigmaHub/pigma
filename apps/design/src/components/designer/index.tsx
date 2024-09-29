@@ -1,52 +1,49 @@
-import CanvasKitInit from "canvaskit-wasm";
+import { Application, Rect, Runtime } from "@pigma/engine";
 import { onCleanup, onMount } from "solid-js";
 
-// src/canvasKitInit.js
-
-async function initCanvasKit() {
-  const CanvasKit = await CanvasKitInit({
-    locateFile: (file) => `https://unpkg.com/canvaskit-wasm@0.39.1/bin/${file}`,
-  });
-  return CanvasKit;
-}
-
 export function Designer() {
-  let canvasRef: HTMLCanvasElement = null!;
-  let surface: any = null!;
+	let canvasRef: HTMLCanvasElement = null!;
+	let surface: any = null!;
+	let application: Application = null!;
 
-  onMount(async () => {
-    const CanvasKit = await initCanvasKit();
-    surface = CanvasKit.MakeCanvasSurface(canvasRef);
-    if (!surface) {
-      throw new Error("Cannot find canvas");
-    }
-    const canvas = surface.getCanvas();
+	onMount(async () => {
+		application = new Application({
+			canvas: canvasRef,
+		});
 
-    const paint = new CanvasKit.Paint();
-    paint.setColor(CanvasKit.Color(0, 0, 255, 1.0)); // 蓝色
-    paint.setStyle(CanvasKit.PaintStyle.Fill);
+		await application.init();
 
-    const rect = CanvasKit.LTRBRect(10, 10, 50, 50);
-    canvas.drawRect(rect, paint);
+		const rect = new Rect({
+			width: 100,
+			height: 100,
+		});
 
-    surface.flush();
-    paint.delete();
-  });
+		rect.draw();
 
-  onCleanup(() => {
-    if (surface) {
-      surface.dispose();
-    }
-  });
+		const rect2 = new Rect({
+			width: 200,
+			height: 200,
+			position: {
+				x: 100,
+				y: 100,
+			},
+		});
 
-  return (
-    <div>
-      <canvas
-        ref={canvasRef}
-        id="your-canvas-id"
-        width="800"
-        height="600"
-      ></canvas>
-    </div>
-  );
+		rect.draw();
+		rect2.draw();
+
+		Runtime.update();
+	});
+
+	onCleanup(() => {
+		if (surface) {
+			surface.dispose();
+		}
+	});
+
+	return (
+		<div>
+			<canvas ref={canvasRef} id="your-canvas-id" width="800" height="600" />
+		</div>
+	);
 }

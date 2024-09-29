@@ -1,1 +1,2 @@
-console.log("核心库");
+export * from "./BaseObject";
+export * from "./ObjectId";

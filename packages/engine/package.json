@@ -1,7 +1,7 @@
 {
-  "name": "engine",
+  "name": "@pigma/engine",
   "version": "0.0.0",
-  "private": true,
+  "main": "src/index.ts",
   "scripts": {
     "dev": "echo 'Add dev script here'",
     "build": "echo 'Add build script here'",
@@ -9,7 +9,8 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "canvaskit-wasm": "^0.39.1"
+    "canvaskit-wasm": "^0.39.1",
+    "@pigma/core": "workspace:*"
   },
   "peerDependencies": {
     "canvaskit-wasm": "^0.39.x"

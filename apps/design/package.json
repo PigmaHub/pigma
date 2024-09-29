@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "canvaskit-wasm": "^0.39.1",
-    "solid-js": "^1.8.15"
+    "solid-js": "^1.8.15",
+    "@pigma/engine": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
