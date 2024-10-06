@@ -2,28 +2,35 @@ import CanvasKitInit from "canvaskit-wasm";
 import { Runtime } from "./runtime";
 
 export type ApplicationOptions = {
-    canvas: HTMLCanvasElement;
-}
+	canvas: HTMLCanvasElement;
+};
 
 export class Application {
-    private canvas: HTMLCanvasElement;
-    constructor(options?: ApplicationOptions) {
-        this.canvas = options?.canvas || document.createElement("canvas");
-    }
+	private readonly canvas: HTMLCanvasElement;
 
-    async init() {
-        const CanvasKit = await CanvasKitInit({
-            locateFile: (file) => `https://unpkg.com/canvaskit-wasm@0.39.1/bin/${file}`,
-        });
+	constructor(options?: ApplicationOptions) {
+		this.canvas = options?.canvas ?? document.createElement("canvas");
+	}
 
-        Runtime.canvasKit = CanvasKit;
+	async init(): Promise<void> {
+		try {
+			const CanvasKit = await CanvasKitInit({
+				locateFile: (file) =>
+					`https://unpkg.com/canvaskit-wasm@0.39.1/bin/${file}`,
+			});
 
-        const surface = CanvasKit.MakeWebGLCanvasSurface(this.canvas);
-        if (!surface) {
-            throw new Error("Failed to create surface");
-        }
-        Runtime.surface = surface;
-    }
+			Runtime.canvasKit = CanvasKit;
 
+			const surface = CanvasKit.MakeWebGLCanvasSurface(this.canvas);
+			if (!surface) {
+				throw new Error("无法创建surface");
+			}
+
+			Runtime.surface = surface;
+			Runtime.paint = new CanvasKit.Paint();
+		} catch (error) {
+			console.error("初始化失败:", error);
+			throw error;
+		}
+	}
 }
-

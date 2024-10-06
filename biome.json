@@ -18,7 +18,6 @@
 			"jsxQuoteStyle": "double",
 			"quoteProperties": "asNeeded",
 			"semicolons": "always",
-			"lineWidth": 80,
 			"trailingCommas": "all"
 		}
 	},
