@@ -10,14 +10,15 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/color": "^4.2.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "color": "^4.2.3",
     "turbo": "^2.0.9"
   },
-  "packageManager":"bun@1.1.7"
-
+  "packageManager": "bun@1.1.7"
 }
