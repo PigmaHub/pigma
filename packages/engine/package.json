@@ -9,10 +9,10 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "canvaskit-wasm": "^0.39.1",
+    "@pigma/canvaskit-wasm": "^0.39.2",
     "@pigma/core": "workspace:*"
   },
   "peerDependencies": {
-    "canvaskit-wasm": "^0.39.x"
+    "@pigma/canvaskit-wasm": "^0.39.x"
   }
 }

@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "canvaskit-wasm": "^0.39.1",
+    "@pigma/canvaskit-wasm": "^0.39.2",
     "solid-js": "^1.8.15",
     "@pigma/engine": "workspace:*"
   },

@@ -15,8 +15,9 @@ export class Application {
 	async init(): Promise<void> {
 		try {
 			const CanvasKit = await CanvasKitInit({
-				locateFile: (file) =>
-					`https://unpkg.com/canvaskit-wasm@0.39.1/bin/${file}`,
+				locateFile: (file) => {
+					return `https://cdn.jsdelivr.net/gh/ZoeLeee/cdn@pigma/script/${file}`
+				},
 			});
 
 			Runtime.canvasKit = CanvasKit;
