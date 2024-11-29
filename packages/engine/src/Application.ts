@@ -1,37 +1,24 @@
-import CanvasKitInit from "canvaskit-wasm";
 import { Runtime } from "./runtime";
+import { Graphics, Application as PXApplication } from "pixi.js";
 
 export type ApplicationOptions = {
-	canvas: HTMLCanvasElement;
+  container: HTMLElement;
 };
 
 export class Application {
-	private readonly canvas: HTMLCanvasElement;
+  private readonly container: HTMLElement;
 
-	constructor(options?: ApplicationOptions) {
-		this.canvas = options?.canvas ?? document.createElement("canvas");
-	}
+  constructor(options?: ApplicationOptions) {
+    this.container = options?.container ?? document.createElement("div");
+  }
 
-	async init(): Promise<void> {
-		try {
-			const CanvasKit = await CanvasKitInit({
-				locateFile: (file) => {
-					return `https://cdn.jsdelivr.net/gh/ZoeLeee/cdn@pigma/script/${file}`
-				},
-			});
+  async init(): Promise<void> {
+    const app = new PXApplication();
+    await app.init({ width: 640, height: 360 });
+    this.container.appendChild(app.canvas);
 
-			Runtime.canvasKit = CanvasKit;
+    const obj = new Graphics().rect(0, 0, 200, 100).fill(0xff0000);
 
-			const surface = CanvasKit.MakeWebGLCanvasSurface(this.canvas);
-			if (!surface) {
-				throw new Error("无法创建surface");
-			}
-
-			Runtime.surface = surface;
-			Runtime.paint = new CanvasKit.Paint();
-		} catch (error) {
-			console.error("初始化失败:", error);
-			throw error;
-		}
-	}
+    app.stage.addChild(obj);
+  }
 }

@@ -9,13 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pigma/canvaskit-wasm": "^0.39.2",
-    "solid-js": "^1.8.15",
+    "solid-js": "^1.9.3",
     "@pigma/engine": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vite-plugin-solid": "^2.10.2"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1",
+    "vite-plugin-solid": "^2.11.0"
   }
 }
