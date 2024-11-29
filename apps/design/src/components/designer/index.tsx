@@ -1,8 +1,8 @@
-import { Application, Rect, Runtime } from "@pigma/engine";
+import { Application } from "@pigma/engine";
 import { onCleanup, onMount } from "solid-js";
 
 export function Designer() {
-	let canvasRef: HTMLDivElement = null!;
+	const canvasRef: HTMLDivElement = null!;
 
 	let application: Application = null!;
 
@@ -16,5 +16,5 @@ export function Designer() {
 
 	onCleanup(() => {});
 
-	return <div ref={canvasRef}></div>;
+	return <div ref={canvasRef} class="w-full h-full" />;
 }

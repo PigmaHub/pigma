@@ -14,7 +14,9 @@ export class Application {
 
   async init(): Promise<void> {
     const app = new PXApplication();
-    await app.init({ width: 640, height: 360 });
+    await app.init({
+      resizeTo: this.container,
+    });
     this.container.appendChild(app.canvas);
 
     const obj = new Graphics().rect(0, 0, 200, 100).fill(0xff0000);
