@@ -12,7 +12,7 @@
     "dev": "turbo run dev"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "1.9.3",
     "@types/bun": "latest",
     "@types/color": "^4.2.0"
   },

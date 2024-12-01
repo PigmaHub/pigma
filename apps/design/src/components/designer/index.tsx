@@ -1,4 +1,4 @@
-import { Application } from "@pigma/engine";
+import { Application, Rect } from "@pigma/engine";
 import { onCleanup, onMount } from "solid-js";
 
 export function Designer() {
@@ -12,6 +12,8 @@ export function Designer() {
 		});
 
 		await application.init();
+
+		application.append(new Rect());
 	});
 
 	onCleanup(() => {});

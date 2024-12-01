@@ -1,3 +1,4 @@
+import type { Entity } from "./entitys";
 import { Runtime } from "./runtime";
 import { Graphics, Application as PXApplication } from "pixi.js";
 
@@ -7,6 +8,7 @@ export type ApplicationOptions = {
 
 export class Application {
   private readonly container: HTMLElement;
+  private _app: PXApplication | null = null;
 
   constructor(options?: ApplicationOptions) {
     this.container = options?.container ?? document.createElement("div");
@@ -16,11 +18,18 @@ export class Application {
     const app = new PXApplication();
     await app.init({
       resizeTo: this.container,
+      background: "#1e1e1e",
     });
     this.container.appendChild(app.canvas);
 
-    const obj = new Graphics().rect(0, 0, 200, 100).fill(0xff0000);
+    this._app = app;
+  }
 
-    app.stage.addChild(obj);
+  append(object: Entity) {
+    this._app?.stage.addChild(object.ObjectContainer);
+
+    object.ObjectContainer.position.set(100, 100);
+
+    return object;
   }
 }
