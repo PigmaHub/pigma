@@ -2,7 +2,7 @@ import { Application } from "@pigma/engine";
 import { onCleanup, onMount } from "solid-js";
 
 export function Designer() {
-	const canvasRef: HTMLDivElement = null!;
+	let canvasRef: HTMLDivElement = null!;
 
 	let application: Application = null!;
 
