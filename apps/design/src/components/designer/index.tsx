@@ -16,7 +16,13 @@ export function Designer() {
 		app.append(new Rect());
 	});
 
-	onCleanup(() => {});
+	onCleanup(() => {
+		app?.dispose();
+	});
 
-	return <div ref={canvasRef} class="w-full h-full" />;
+	return (
+		<div class="w-full h-full flex-1">
+			<div ref={canvasRef} class="w-full h-full"></div>
+		</div>
+	);
 }

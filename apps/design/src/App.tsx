@@ -1,12 +1,15 @@
 import "./index.css";
 import "./App.css";
 import { Designer } from "./components/designer";
+import { LeftPanel } from "./components/left-panel";
+import { RightPanel } from "./components/right-panel";
 
-// src/canvasKitInit.js
 function App() {
 	return (
-		<div class="w-full h-full">
+		<div class="w-full h-full flex">
+			<LeftPanel />
 			<Designer />
+			<RightPanel />
 		</div>
 	);
 }
