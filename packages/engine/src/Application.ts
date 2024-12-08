@@ -1,35 +1,44 @@
-import type { Entity } from "./entitys";
-import { Runtime } from "./runtime";
-import { Graphics, Application as PXApplication } from "pixi.js";
+import { Viewer } from "./Viewer";
+import { Database } from "./database/Database";
+import { Entity } from "./entitys";
 
 export type ApplicationOptions = {
-  container: HTMLElement;
+	container: HTMLElement;
 };
 
 export class Application {
-  private readonly container: HTMLElement;
-  private _app: PXApplication | null = null;
+	private readonly container: HTMLElement;
+	private _viewer: Viewer;
+	private _db: Database;
 
-  constructor(options?: ApplicationOptions) {
-    this.container = options?.container ?? document.createElement("div");
-  }
+	constructor(options?: ApplicationOptions) {
+		this.container = options?.container ?? document.createElement("div");
+	}
 
-  async init(): Promise<void> {
-    const app = new PXApplication();
-    await app.init({
-      resizeTo: this.container,
-      background: "#1e1e1e",
-    });
-    this.container.appendChild(app.canvas);
+	async init(): Promise<void> {
+		this._db = new Database();
+		this._viewer = new Viewer({ container: this.container });
 
-    this._app = app;
-  }
+		await this._viewer.init();
 
-  append(object: Entity) {
-    this._app?.stage.addChild(object.ObjectContainer);
+		this.register();
+	}
 
-    object.ObjectContainer.position.set(100, 100);
+	append(object: Entity) {
+		this._db.append(object);
+		return object;
+	}
 
-    return object;
-  }
+	dispose() {
+		this._viewer?.dispose();
+		this._db.dispose();
+	}
+
+	private register() {
+		this._db.onObjectAddedObserable.add((object) => {
+			if (object instanceof Entity) {
+				this._viewer?.append(object.ObjectContainer);
+			}
+		});
+	}
 }

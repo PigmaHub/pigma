@@ -4,16 +4,16 @@ import { onCleanup, onMount } from "solid-js";
 export function Designer() {
 	let canvasRef: HTMLDivElement = null!;
 
-	let application: Application = null!;
+	let app: Application = null!;
 
 	onMount(async () => {
-		application = new Application({
+		app = new Application({
 			container: canvasRef,
 		});
 
-		await application.init();
+		await app.init();
 
-		application.append(new Rect());
+		app.append(new Rect());
 	});
 
 	onCleanup(() => {});
