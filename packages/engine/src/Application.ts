@@ -1,6 +1,7 @@
-import { Viewer } from "./Viewer";
+import { Viewer } from "./viewer";
 import { Database } from "./database/Database";
 import { Entity } from "./entitys";
+import { Editor } from "./editor/Editor";
 
 export type ApplicationOptions = {
 	container: HTMLElement;
@@ -9,6 +10,7 @@ export type ApplicationOptions = {
 export class Application {
 	private readonly container: HTMLElement;
 	private _viewer: Viewer;
+	private _editor: Editor;
 	private _db: Database;
 
 	constructor(options?: ApplicationOptions) {
@@ -20,6 +22,8 @@ export class Application {
 		this._viewer = new Viewer({ container: this.container });
 
 		await this._viewer.init();
+
+		this._editor = new Editor(this._viewer);
 
 		this.register();
 	}

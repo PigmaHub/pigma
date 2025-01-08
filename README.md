@@ -11,3 +11,11 @@ To install the dependencies, run:
 ## Update package version
 
 `bun x npm-check-updates -ui -ws`
+
+## Technology stack
+
+- TypeScript
+- SolidJS
+- Turbopack
+- Pixijs
+- JSON Patch
