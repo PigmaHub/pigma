@@ -4,45 +4,49 @@ import { Entity } from "./entitys";
 import { Editor } from "./editor/Editor";
 
 export type ApplicationOptions = {
-	container: HTMLElement;
+  container: HTMLElement;
 };
 
 export class Application {
-	private readonly container: HTMLElement;
-	private _viewer: Viewer;
-	private _editor: Editor;
-	private _db: Database;
+  private readonly container: HTMLElement;
+  private _viewer: Viewer;
+  private _editor: Editor;
+  private _db: Database;
 
-	constructor(options?: ApplicationOptions) {
-		this.container = options?.container ?? document.createElement("div");
-	}
+  constructor(options?: ApplicationOptions) {
+    this.container = options?.container ?? document.createElement("div");
+  }
 
-	async init(): Promise<void> {
-		this._db = new Database();
-		this._viewer = new Viewer({ container: this.container });
+  get Viewer() {
+    return this._viewer;
+  }
 
-		await this._viewer.init();
+  async init(): Promise<void> {
+    this._db = new Database();
+    this._viewer = new Viewer({ container: this.container });
 
-		this._editor = new Editor(this._viewer);
+    await this._viewer.init();
 
-		this.register();
-	}
+    this._editor = new Editor(this._viewer);
 
-	append(object: Entity) {
-		this._db.append(object);
-		return object;
-	}
+    this.register();
+  }
 
-	dispose() {
-		this._viewer?.dispose();
-		this._db.dispose();
-	}
+  append(object: Entity) {
+    this._db.append(object);
+    return object;
+  }
 
-	private register() {
-		this._db.onObjectAddedObserable.add((object) => {
-			if (object instanceof Entity) {
-				this._viewer?.append(object.ObjectContainer);
-			}
-		});
-	}
+  dispose() {
+    this._viewer?.dispose();
+    this._db.dispose();
+  }
+
+  private register() {
+    this._db.onObjectAddedObserable.add((object) => {
+      if (object instanceof Entity) {
+        this._viewer?.append(object.ObjectContainer);
+      }
+    });
+  }
 }

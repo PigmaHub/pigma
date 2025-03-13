@@ -1,4 +1,4 @@
-import { Application, Rect } from "@pigma/engine";
+import { Application, Rect, Transformer } from "@pigma/engine";
 import { onCleanup, onMount } from "solid-js";
 
 export function Designer() {
@@ -13,7 +13,17 @@ export function Designer() {
 
 		await app.init();
 
-		app.append(new Rect());
+		const en = app.append(new Rect());
+
+		en.Position = { x: 100, y: 100 };
+
+		const tool = new Transformer();
+
+		app.Viewer.append(tool);
+
+		setTimeout(() => {
+			tool.select(en.ObjectContainer);
+		}, 100);
 	});
 
 	onCleanup(() => {

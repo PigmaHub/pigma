@@ -16,5 +16,7 @@
 	"peerDependencies": {
 		"pixijs": "^8.x.x"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@pixi/display": "^7.4.3"
+	}
 }
