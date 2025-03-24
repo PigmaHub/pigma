@@ -1,1 +1,1 @@
-export class Transformer {}
+export class TransformerTool {}

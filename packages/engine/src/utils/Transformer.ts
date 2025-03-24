@@ -114,14 +114,9 @@ interface HandleData {
  */
 export class Transformer extends Container {
   // Properties
-  public moveHandle: Graphics;
-  public hScaleHandle: Graphics;
-  public vScaleHandle: Graphics;
-  public scaleHandle: Graphics;
-  public rotateTool: Graphics;
+  public moveArea: Graphics;
+  public outline: Graphics;
   public target: Container | null = null;
-  public border: Graphics;
-  public anchorMark: Graphics;
   public dashed: boolean;
   public boundary: Rectangle | null;
 
@@ -131,10 +126,6 @@ export class Transformer extends Container {
   private controlsDim: number;
   private controlStrokeThickness: number;
   private movedThreshold: number;
-  private left: number = 0;
-  private right: number = 0;
-  private top: number = 0;
-  private bottom: number = 0;
 
   /**
    * Constructor for FreeTransformTool
@@ -159,7 +150,7 @@ export class Transformer extends Container {
     this.handleOpacity = 0.7;
     this.controlsSize = controlsSize || 10;
     this.controlsDim = 0.05;
-    this.controlStrokeThickness = 4;
+    this.controlStrokeThickness = 1;
     this.movedThreshold = 10;
 
     this.dashed = dashed === undefined ? true : dashed;
@@ -168,20 +159,11 @@ export class Transformer extends Container {
     this.visible = false;
 
     // Create border
-    this.border = new Graphics();
-    this.addChild(this.border);
-
-    // Create anchor mark
-    this.anchorMark = new Graphics();
-    this.anchorMark.alpha = this.handleOpacity;
-    this.addChild(this.anchorMark);
+    this.outline = new Graphics();
+    this.addChild(this.outline);
 
     // Create handles
-    this.moveHandle = this.createMoveHandle();
-    this.hScaleHandle = this.createHScaleHandle(lineColor, handleColor);
-    this.vScaleHandle = this.createVScaleHandle(lineColor, handleColor);
-    this.scaleHandle = this.createScaleHandle(lineColor, handleColor);
-    this.rotateTool = this.createRotateHandle(lineColor, handleColor);
+    this.moveArea = this.createMoveHandle();
   }
 
   /**
@@ -197,80 +179,27 @@ export class Transformer extends Container {
     // Copy object transformation
     this.target = target;
     const bounds = target.getBounds();
-    const width = (this.width = bounds.width);
-    const height = (this.height = bounds.height);
+
     this.scale.x = target.scale.x;
     this.scale.y = target.scale.y;
     this.x = bounds.x;
     this.y = bounds.y;
     this.rotation = target.rotation;
 
-    // Handle anchor points
-    let anchor: Point = target.pivot;
+    // Update border
+    this.outline.clear();
 
-    // Calculate bounds
-    this.left = bounds.left;
-    console.log("this.left: ", this.left);
-    this.top = bounds.top;
-    console.log("this.top: ", this.top);
-    // this.bottom = bounds.bottom;
-    // this.right = bounds.right;
-
-    // Update anchor mark
-    this.anchorMark
-      .clear()
-      .star(
-        bounds.width / 2,
-        bounds.height / 2,
-        4,
-        this.controlsSize * 0.8,
-        this.controlsSize * 0.1
-      )
-      .fill(0x333);
-    this.anchorMark.scale.x = 1 / this.scale.x;
-    this.anchorMark.scale.y = 1 / this.scale.y;
-    this.anchorMark.rotation = -this.rotation;
-
-    this.border.clear();
-
-    this.border
-      .rect(0, 0, bounds.width, bounds.height)
-      .stroke({ width: this.controlStrokeThickness / this.scale.x });
-
-    // Tools size should stay consistent
-    const toolScaleX = 1 / this.scale.x;
-    const toolScaleY = 1 / this.scale.y;
+    this.outline.rect(0, 0, bounds.width, bounds.height).stroke({
+      width: this.controlStrokeThickness / this.scale.x,
+      color: 0x90b0ff,
+      alpha: 1,
+    });
 
     // Update move handle hit area
-    (this.moveHandle.hitArea as Rectangle).x = 0;
-    (this.moveHandle.hitArea as Rectangle).y = 0;
-    (this.moveHandle.hitArea as Rectangle).width = bounds.width;
-    (this.moveHandle.hitArea as Rectangle).height = bounds.height;
-
-    // Position scale handle (bottom right)
-    console.log(" this.width: ", this.width);
-    this.scaleHandle.x = width;
-    this.scaleHandle.y = height;
-    this.scaleHandle.scale.x = toolScaleX;
-    this.scaleHandle.scale.y = toolScaleY;
-
-    // Position hScale handle (right edge)
-    this.hScaleHandle.x = width;
-    this.hScaleHandle.y = height / 2;
-    this.hScaleHandle.scale.x = toolScaleX;
-    this.hScaleHandle.scale.y = toolScaleY;
-
-    // Position vScale handle (bottom edge)
-    this.vScaleHandle.x = width / 2;
-    this.vScaleHandle.y = height;
-    this.vScaleHandle.scale.x = toolScaleX;
-    this.vScaleHandle.scale.y = toolScaleY;
-
-    // Position rotate handle
-    this.rotateTool.x = width;
-    this.rotateTool.y = 0;
-    this.rotateTool.scale.x = toolScaleX;
-    this.rotateTool.scale.y = toolScaleY;
+    (this.moveArea.hitArea as Rectangle).x = 0;
+    (this.moveArea.hitArea as Rectangle).y = 0;
+    (this.moveArea.hitArea as Rectangle).width = bounds.width;
+    (this.moveArea.hitArea as Rectangle).height = bounds.height;
 
     this.visible = true;
   }
@@ -334,6 +263,16 @@ export class Transformer extends Container {
     const moveHandle = new Graphics();
     moveHandle.interactive = true;
     moveHandle.hitArea = new Rectangle();
+
+    // 使用Pixi.js v8的API添加#90b0ff颜色的边框
+    moveHandle
+      .rect(0, 0, 0, 0) // 尺寸将在选择目标时正确设置
+      .stroke({
+        width: this.controlStrokeThickness,
+        color: 0x90b0ff,
+        alpha: 1,
+      });
+
     this.addChild(moveHandle);
 
     // Add tooltip
@@ -414,319 +353,6 @@ export class Transformer extends Container {
     this.handleHandleEvents(moveHandle, handleData);
 
     return moveHandle;
-  }
-
-  /**
-   * Creates the horizontal scale handle
-   */
-  private createHScaleHandle(lineColor: number, handleColor: number): Graphics {
-    const handle = this.createHandle(
-      "Stretch",
-      "e-resize",
-      lineColor,
-      handleColor
-    );
-    handle
-      .rect(0, 0, this.controlsSize, this.controlsSize)
-      .fill(handleColor)
-      .stroke({ width: this.controlStrokeThickness, color: lineColor });
-
-    const handleData: HandleData = { dragging: false };
-
-    handle.on("pointerdown", (event) => {
-      handleData.globalStart = new Point(event.global.x, event.global.y);
-      if (this.target) {
-        handleData.scaleStart = new Point(
-          this.target.scale.x,
-          this.target.scale.y
-        );
-      }
-    });
-
-    handle.on("pointermove", (event) => {
-      if (
-        !handleData.dragging ||
-        !this.target ||
-        !handleData.globalStart ||
-        !handleData.scaleStart
-      )
-        return;
-
-      const distStart = calcDistance(
-        handleData.globalStart,
-        new Point(this.target.x, this.target.y)
-      );
-      const distEnd = calcDistance(
-        event.global,
-        new Point(this.target.x, this.target.y)
-      );
-      const rescaleFactor = distEnd / distStart;
-
-      this.target.scale.x = handleData.scaleStart.x * rescaleFactor;
-      this.update();
-    });
-
-    this.addChild(handle);
-    return handle;
-  }
-
-  /**
-   * Creates the vertical scale handle
-   */
-  private createVScaleHandle(lineColor: number, handleColor: number): Graphics {
-    const handle = this.createHandle(
-      "Stretch",
-      "s-resize",
-      lineColor,
-      handleColor
-    );
-    handle
-      .rect(0, 0, this.controlsSize, this.controlsSize)
-      .fill(handleColor)
-      .stroke({ width: this.controlStrokeThickness, color: lineColor });
-
-    const handleData: HandleData = { dragging: false };
-
-    handle.on("pointerdown", (event) => {
-      handleData.globalStart = new Point(event.global.x, event.global.y);
-      if (this.target) {
-        handleData.scaleStart = new Point(
-          this.target.scale.x,
-          this.target.scale.y
-        );
-      }
-    });
-
-    handle.on("pointermove", (event) => {
-      if (
-        !handleData.dragging ||
-        !this.target ||
-        !handleData.globalStart ||
-        !handleData.scaleStart
-      )
-        return;
-
-      const distStart = calcDistance(
-        handleData.globalStart,
-        new Point(this.target.x, this.target.y)
-      );
-      const distEnd = calcDistance(
-        event.global,
-        new Point(this.target.x, this.target.y)
-      );
-      const rescaleFactor = distEnd / distStart;
-
-      this.target.scale.y = handleData.scaleStart.y * rescaleFactor;
-      this.update();
-    });
-
-    this.addChild(handle);
-    return handle;
-  }
-
-  /**
-   * Creates the scale handle (bottom-right corner)
-   */
-  private createScaleHandle(lineColor: number, handleColor: number): Graphics {
-    const handle = this.createHandle(
-      "Resize",
-      "se-resize",
-      lineColor,
-      handleColor
-    );
-    handle
-      .rect(0, 0, this.controlsSize, this.controlsSize)
-      .fill(handleColor)
-      .stroke({ width: this.controlStrokeThickness, color: lineColor });
-
-    const handleData: HandleData = { dragging: false };
-
-    handle.on("pointerdown", (event) => {
-      handleData.downGlobalPosition = new Point(event.global.x, event.global.y);
-      if (this.target) {
-        handleData.startScale = new Point(
-          this.target.scale.x,
-          this.target.scale.y
-        );
-        handleData.resolutionStart =
-          "resolution" in this.target ? (this.target as any).resolution : 1;
-        handleData.targetStart = this.target.position.clone();
-        handleData.startBounds = this.target.getBounds().rectangle;
-      }
-    });
-
-    handle.on("pointermove", (event) => {
-      if (
-        !handleData.dragging ||
-        !this.target ||
-        !handleData.downGlobalPosition ||
-        !handleData.startScale ||
-        !handleData.targetStart
-      )
-        return;
-
-      const distStart = calcDistance(
-        handleData.downGlobalPosition,
-        new Point(this.target.x, this.target.y)
-      );
-      const distEnd = calcDistance(
-        event.global,
-        new Point(this.target.x, this.target.y)
-      );
-      handleData.rescaleFactor = distEnd / distStart;
-
-      if (this.boundary && handleData.startBounds) {
-        const boundsAnchor = {
-          x:
-            ("anchor" in this.target ? (this.target as any).anchor.x : 0.5) *
-            handleData.startBounds.width,
-          y:
-            ("anchor" in this.target ? (this.target as any).anchor.y : 0.5) *
-            handleData.startBounds.height,
-        };
-
-        const bounds = new Rectangle(
-          handleData.startBounds.x -
-            boundsAnchor.x * handleData.rescaleFactor +
-            boundsAnchor.x,
-          handleData.startBounds.y -
-            boundsAnchor.y * handleData.rescaleFactor +
-            boundsAnchor.y,
-          handleData.startBounds.width * handleData.rescaleFactor,
-          handleData.startBounds.height * handleData.rescaleFactor
-        );
-
-        const constrainedBounds = constrainRectTo(
-          bounds.clone(),
-          this.boundary,
-          true
-        );
-        const boundsPositionDelta = {
-          x: bounds.x - constrainedBounds.x,
-          y: bounds.y - constrainedBounds.y,
-        };
-
-        handleData.rescaleFactor = Math.min(
-          constrainedBounds.width / handleData.startBounds.width,
-          constrainedBounds.height / handleData.startBounds.height
-        );
-
-        this.target.position.x =
-          handleData.targetStart.x - boundsPositionDelta.x;
-        this.target.position.y =
-          handleData.targetStart.y - boundsPositionDelta.y;
-      }
-
-      this.target.scale.x = handleData.startScale.x * handleData.rescaleFactor;
-      this.target.scale.y = handleData.startScale.y * handleData.rescaleFactor;
-
-      this.update();
-    });
-
-    const handleScaleUp = () => {
-      if (
-        this.target &&
-        "resolution" in this.target &&
-        handleData.resolutionStart !== undefined &&
-        handleData.rescaleFactor !== undefined
-      ) {
-        (this.target as any).resolution =
-          handleData.resolutionStart * handleData.rescaleFactor;
-        this.update();
-      }
-    };
-
-    handle.on("pointerupoutside", handleScaleUp);
-    handle.on("pointerup", handleScaleUp);
-
-    this.addChild(handle);
-    return handle;
-  }
-
-  /**
-   * Creates the rotate handle
-   */
-  private createRotateHandle(lineColor: number, handleColor: number): Graphics {
-    const handle = this.createHandle(
-      "Rotate",
-      "pointer",
-      lineColor,
-      handleColor
-    );
-    // 使用 PixiJS v8 的 API
-    handle
-      .circle(
-        this.controlsSize / 2,
-        this.controlsSize / 2,
-        this.controlsSize / 2
-      )
-      .fill(handleColor)
-      .stroke({ width: this.controlStrokeThickness, color: lineColor });
-
-    const handleData: HandleData = { dragging: false };
-
-    handle.on("pointerdown", (event) => {
-      handleData.downGlobalPosition = new Point(event.global.x, event.global.y);
-      if (this.target) {
-        handleData.startRotation = this.target.rotation;
-      }
-    });
-
-    handle.on("pointermove", (event) => {
-      if (
-        !handleData.dragging ||
-        !this.target ||
-        !handleData.downGlobalPosition ||
-        handleData.startRotation === undefined
-      )
-        return;
-
-      // The drag point is relative to the display object position
-      const relativeStartPoint = {
-        x: handleData.downGlobalPosition.x - this.target.x,
-        y: handleData.downGlobalPosition.y - this.target.y,
-      };
-
-      const relativeEndPoint = {
-        x: event.global.x - this.target.x,
-        y: event.global.y - this.target.y,
-      };
-
-      const endAngle = calcAngleRadians(relativeEndPoint.x, relativeEndPoint.y);
-      const startAngle = calcAngleRadians(
-        relativeStartPoint.x,
-        relativeStartPoint.y
-      );
-      const deltaAngle = endAngle - startAngle;
-
-      // TODO: constrain to bounds if needed
-      this.target.rotation = handleData.startRotation + deltaAngle;
-      this.update();
-    });
-
-    this.addChild(handle);
-    return handle;
-  }
-
-  /**
-   * Creates a generic handle with common properties
-   */
-  private createHandle(
-    name: string,
-    cursor: string,
-    lineColor: number,
-    handleColor: number
-  ): Graphics {
-    const handle = new Graphics();
-    handle.interactive = true;
-    handle.alpha = this.handleOpacity;
-
-    this.addToolTip(handle, name, cursor);
-
-    const handleData: HandleData = { dragging: false };
-    this.handleHandleEvents(handle, handleData);
-
-    return handle;
   }
 
   /**
