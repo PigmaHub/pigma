@@ -16,14 +16,6 @@ export function Designer() {
 		const en = app.append(new Rect());
 
 		en.Position = { x: 100, y: 100 };
-
-		const tool = new Transformer();
-
-		app.Viewer.append(tool);
-
-		setTimeout(() => {
-			tool.select(en.ObjectContainer);
-		}, 100);
 	});
 
 	onCleanup(() => {
