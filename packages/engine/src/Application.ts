@@ -2,6 +2,10 @@ import { Viewer } from "./viewer";
 import { Database } from "./database/Database";
 import { Entity } from "./entitys";
 import { Editor } from "./editor/Editor";
+import { Container, extensions } from "pixi.js";
+import { MetadataMixin } from "./utils/MetadataMin";
+
+extensions.mixin(Container, MetadataMixin);
 
 export type ApplicationOptions = {
   container: HTMLElement;

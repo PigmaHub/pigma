@@ -1,22 +1,22 @@
 {
-	"name": "@pigma/engine",
-	"version": "0.0.0",
-	"main": "src/index.ts",
-	"scripts": {
-		"dev": "echo 'Add dev script here'",
-		"build": "echo 'Add build script here'",
-		"test": "echo 'Add test script here'",
-		"lint": "echo 'Add lint script here'"
-	},
-	"devDependencies": {
-		"@pigma/core": "workspace:*",
-		"@pigma/observable": "workspace:*",
-		"pixi.js": "^8.6.1"
-	},
-	"peerDependencies": {
-		"pixijs": "^8.x.x"
-	},
-	"dependencies": {
-		"@pixi/display": "^7.4.3"
-	}
+  "name": "@pigma/engine",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo 'Add dev script here'",
+    "build": "echo 'Add build script here'",
+    "test": "echo 'Add test script here'",
+    "lint": "echo 'Add lint script here'"
+  },
+  "devDependencies": {
+    "@pigma/core": "workspace:*",
+    "@pigma/observable": "workspace:*",
+    "pixi.js": "^8.9.1"
+  },
+  "peerDependencies": {
+    "pixijs": "^8.x.x"
+  },
+  "dependencies": {
+    "@pixi/display": "^7.4.3"
+  }
 }
