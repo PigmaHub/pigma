@@ -1,6 +1,6 @@
+import { Observable } from "@pigma/observable";
 import { Point } from "pixi.js";
 import { Rectangle, Container, Graphics } from "pixi.js";
-import { DisplayObject, type DisplayObjectEvents } from "@pixi/display";
 
 // Helper functions
 export function calcAngleDegrees(x: number, y: number): number {
@@ -64,10 +64,7 @@ export function constrainRectTo(
 /**
  * Constrains a display object to a given rect
  */
-export function constrainObjectTo(
-  obj: DisplayObject,
-  container: Rectangle
-): void {
+export function constrainObjectTo(obj: Graphics, container: Rectangle): void {
   const bounds = obj.getBounds();
   const constrained = new Rectangle(
     bounds.x,
@@ -126,6 +123,9 @@ export class Transformer extends Container {
   private controlsDim: number;
   private controlStrokeThickness: number;
   private movedThreshold: number;
+  onDragStartObservable = new Observable<Container>();
+  onDragEndObservable = new Observable<Container>();
+  onDragObservable = new Observable<Container>();
 
   /**
    * Constructor for FreeTransformTool
@@ -289,6 +289,7 @@ export class Transformer extends Container {
       handleData.dragDistance = 0;
       handleData.dragging = true;
       handleData.startBounds = this.target.getBounds().rectangle;
+      this.onDragStartObservable.notifyObservers(this.target!);
     });
 
     moveHandle.on("pointermove", (event) => {
@@ -323,6 +324,7 @@ export class Transformer extends Container {
         );
       }
 
+      this.onDragObservable.notifyObservers(this.target!);
       this.update();
       event.stopPropagation();
     });
@@ -344,6 +346,8 @@ export class Transformer extends Container {
           this.unselect();
         }
       }
+
+      this.onDragEndObservable.notifyObservers(this.target!);
     };
 
     moveHandle.on("pointerup", handleMoveUp);
@@ -359,7 +363,7 @@ export class Transformer extends Container {
    * Adds a tooltip to a handle
    */
   private addToolTip(shape: Graphics, name: string, cursor: string): void {
-    shape.on("pointerover" as keyof DisplayObjectEvents, () => {
+    shape.on("pointerover", () => {
       this.setTitle(name);
       this.setCursor(cursor);
     });

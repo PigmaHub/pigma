@@ -8,7 +8,10 @@ import { EditorStatus } from "../types";
 import { Observable } from "@pigma/observable";
 import { Container, Rectangle } from "pixi.js";
 import { Entity } from "../../entitys";
-import { findParentWithObjectType, hasObjectType } from "../../utils/containerUtils";
+import {
+  findParentWithObjectType,
+  hasObjectType,
+} from "../../utils/containerUtils";
 
 /**
  * Selection mode enum
@@ -20,10 +23,15 @@ export enum SelectionMode {
   INTERSECT = 1,
 }
 
-export class SelectService implements EditorService {
+export type SelectableObject = {
+  objects: Graphics[];
+  entitys: Entity[];
+};
+
+export class SelectService implements EditorService<FederatedPointerEvent> {
   selectRange: SelectionBox;
   doing = false;
-  onSelectObservable = new Observable<Graphics[]>();
+  onSelectObservable = new Observable<SelectableObject>();
   /** Selection mode, default is intersect mode */
   selectionMode: SelectionMode = SelectionMode.INTERSECT;
 
@@ -100,7 +108,9 @@ export class SelectService implements EditorService {
             }
           } else {
             // If not a ROOT type, find its ROOT parent
-            const rootParent = findParentWithObjectType(child.parent as Container);
+            const rootParent = findParentWithObjectType(
+              child.parent as Container
+            );
             if (rootParent && !processedRootObjects.has(rootParent)) {
               selectedObjects.push(rootParent);
               processedRootObjects.add(rootParent);
@@ -202,13 +212,10 @@ export class SelectService implements EditorService {
         const selectedObjects = this.getObjectsInSelectionBox();
 
         // Notify observers with the selected objects
-        this.onSelectObservable.notifyObservers(selectedObjects as unknown as Graphics[]);
-
-        // Log selected objects (can add highlighting logic here)
-        console.log(
-          `Selected ${selectedObjects.length} objects`,
-          selectedObjects
-        );
+        this.onSelectObservable.notifyObservers({
+          objects: selectedObjects as Graphics[],
+          entitys: selectedObjects.map((o) => o.metadata.OBJECT),
+        });
       }
 
       this.selectRange.hide();

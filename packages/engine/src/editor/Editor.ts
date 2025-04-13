@@ -3,15 +3,18 @@ import type { Viewer } from "../viewer";
 import { SelectService } from "./select/SelectControl";
 import { EditorStatus } from "./types";
 import type { EditorService } from "./service";
+import { TransformService } from "./transformer/TransformerService";
 
 export class Editor {
   status = EditorStatus.IDLE;
 
   selectService: SelectService;
+  transfromService: TransformService;
   private _services: EditorService[] = [];
 
   constructor(private _viewer: Viewer) {
     this.selectService = new SelectService(_viewer, this);
+    this.transfromService = new TransformService(_viewer);
 
     this._services = [this.selectService];
 
@@ -44,6 +47,10 @@ export class Editor {
   private _register() {
     this._viewer.PXApp.stage.on("pointerdown", (event) => {
       this.handlePointerDown(event);
+    });
+
+    this.selectService.onSelectObservable.add((data) => {
+      this.transfromService.do(data.objects);
     });
   }
   dispose() {
