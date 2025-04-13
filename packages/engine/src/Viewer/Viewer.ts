@@ -11,14 +11,13 @@ export class Viewer {
   }
   async init() {
     const app = new PXApplication();
+    this._app = app;
     await app.init({
       resizeTo: this.options.container,
       background: "#1e1e1e",
     });
 
     this.options.container.appendChild(app.canvas);
-
-    this._app = app;
 
     app.stage.eventMode = "static";
     app.stage.hitArea = { contains: () => true };
@@ -37,8 +36,14 @@ export class Viewer {
     this.toolLayer.addChild(object);
   }
   dispose() {
-    this._app?.destroy();
-    this.unregister;
+    try {
+      if (this._app?.renderer) {
+        this._app?.destroy();
+      } else {
+        this._app?.stage?.destroy();
+      }
+      this.unregister;
+    } catch (err) {}
   }
 
   private register() {

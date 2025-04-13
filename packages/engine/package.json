@@ -1,6 +1,6 @@
 {
   "name": "@pigma/engine",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "src/index.ts",
   "scripts": {
     "dev": "echo 'Add dev script here'",
@@ -12,8 +12,5 @@
     "@pigma/core": "workspace:*",
     "@pigma/observable": "workspace:*",
     "pixi.js": "^8.9.1"
-  },
-  "peerDependencies": {
-    "pixijs": "^8.x.x"
   }
 }

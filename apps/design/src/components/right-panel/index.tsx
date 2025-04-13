@@ -1,7 +1,7 @@
-import type { Component } from "solid-js";
+import { FC } from "react";
 
 interface RightPanelProps {}
 
-export const RightPanel: Component<RightPanelProps> = () => {
-	return <div class="w-[260px]">右侧面板</div>;
+export const RightPanel: FC<RightPanelProps> = () => {
+  return <div className="w-[260px]">右侧面板</div>;
 };
