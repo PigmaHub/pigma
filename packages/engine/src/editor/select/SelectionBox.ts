@@ -1,4 +1,4 @@
-import { Graphics, Point } from "pixi.js";
+import { Graphics, Point, Rectangle } from "pixi.js";
 import type { Viewer } from "../../viewer";
 
 export class SelectionBox {
@@ -41,5 +41,21 @@ export class SelectionBox {
 				color: 0x87ceeb,
 				alpha: 0.5,
 			});
+	}
+
+	/**
+	 * Get the rectangle area of the selection box
+	 * @returns Rectangle area of the selection box
+	 */
+	getSelectionRectangle(): Rectangle {
+		const { x: x1, y: y1 } = this.start;
+		const { x: x2, y: y2 } = this.end;
+
+		return new Rectangle(
+			Math.min(x1, x2),
+			Math.min(y1, y2),
+			Math.abs(x2 - x1),
+			Math.abs(y2 - y1)
+		);
 	}
 }

@@ -12,7 +12,7 @@
     "dev": "turbo run dev"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@types/bun": "latest",
     "@types/color": "^4.2.0"
   },
@@ -20,8 +20,8 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "color": "^4.2.3",
-    "turbo": "^2.3.3"
+    "color": "^5.0.0",
+    "turbo": "^2.5.0"
   },
-  "packageManager": "bun@1.1.38"
+  "packageManager": "pnpm@9.14.4"
 }
