@@ -290,43 +290,20 @@ export class Transformer extends Container {
       handleData.dragging = true;
       handleData.startBounds = this.target.getBounds().rectangle;
       this.onDragStartObservable.notifyObservers(this.target!);
-    });
 
-    moveHandle.on("pointermove", (event) => {
-      if (!handleData.dragging) return;
-
-      const moveDelta = new Point(
-        event.global.x - (handleData.downGlobal?.x || 0),
-        event.global.y - (handleData.downGlobal?.y || 0)
-      );
-
-      if (this.boundary && handleData.startBounds && this.target) {
-        const newBounds = new Rectangle(
-          moveDelta.x + handleData.startBounds.x,
-          moveDelta.y + handleData.startBounds.y,
-          handleData.startBounds.width,
-          handleData.startBounds.height
-        );
-        const constrainedBounds = constrainRectTo(newBounds, this.boundary);
-        moveDelta.x = constrainedBounds.x - handleData.startBounds.x;
-        moveDelta.y = constrainedBounds.y - handleData.startBounds.y;
-      }
-
-      if (this.target && handleData.targetStart) {
-        this.target.position.x = handleData.targetStart.x + moveDelta.x;
-        this.target.position.y = handleData.targetStart.y + moveDelta.y;
-      }
-
-      if (handleData.downGlobal) {
-        handleData.dragDistance = calcDistance(
-          event.global,
-          handleData.downGlobal
-        );
-      }
-
-      this.onDragObservable.notifyObservers(this.target!);
-      this.update();
-      event.stopPropagation();
+      // 添加全局事件监听器到 window 对象
+      const moveHandler = (e: PointerEvent) => {
+        this.onMouseMove(e, handleData);
+      };
+      const upHandler = (e: PointerEvent) => {
+        this.onMouseUp(e, handleData);
+        // 移除全局事件监听器
+        window.removeEventListener('pointermove', moveHandler);
+        window.removeEventListener('pointerup', upHandler);
+      };
+      
+      window.addEventListener('pointermove', moveHandler);
+      window.addEventListener('pointerup', upHandler);
     });
 
     const handleMoveUp = (event: any) => {
@@ -357,6 +334,64 @@ export class Transformer extends Container {
     this.handleHandleEvents(moveHandle, handleData);
 
     return moveHandle;
+  }
+
+  private onMouseMove(event: PointerEvent, handleData: HandleData) {
+    if (!handleData.dragging) return;
+
+    const moveDelta = new Point(
+      event.clientX - (handleData.downGlobal?.x || 0),
+      event.clientY - (handleData.downGlobal?.y || 0)
+    );
+
+    if (this.boundary && handleData.startBounds && this.target) {
+      const newBounds = new Rectangle(
+        moveDelta.x + handleData.startBounds.x,
+        moveDelta.y + handleData.startBounds.y,
+        handleData.startBounds.width,
+        handleData.startBounds.height
+      );
+      const constrainedBounds = constrainRectTo(newBounds, this.boundary);
+      moveDelta.x = constrainedBounds.x - handleData.startBounds.x;
+      moveDelta.y = constrainedBounds.y - handleData.startBounds.y;
+    }
+
+    if (this.target && handleData.targetStart) {
+      this.target.position.x = handleData.targetStart.x + moveDelta.x;
+      this.target.position.y = handleData.targetStart.y + moveDelta.y;
+    }
+
+    if (handleData.downGlobal) {
+      handleData.dragDistance = calcDistance(
+        new Point(event.clientX, event.clientY),
+        handleData.downGlobal
+      );
+    }
+
+    this.onDragObservable.notifyObservers(this.target!);
+    this.update();
+    event.stopPropagation();
+  }
+
+  private onMouseUp(event: PointerEvent, handleData: HandleData) {
+    event.stopPropagation();
+
+    if (handleData.dragging) {
+      this.alpha = 1;
+      handleData.downGlobal = undefined;
+      handleData.targetStart = undefined;
+      handleData.dragging = false;
+
+      // Only deselect if there was very little movement
+      if (
+        !handleData.dragDistance ||
+        handleData.dragDistance < this.movedThreshold
+      ) {
+        this.unselect();
+      }
+    }
+
+    this.onDragEndObservable.notifyObservers(this.target!);
   }
 
   /**

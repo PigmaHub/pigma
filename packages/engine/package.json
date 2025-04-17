@@ -12,5 +12,8 @@
     "@pigma/core": "workspace:*",
     "@pigma/observable": "workspace:*",
     "pixi.js": "^8.9.1"
+  },
+  "dependencies": {
+    "pixi-viewport": "^6.0.3"
   }
 }

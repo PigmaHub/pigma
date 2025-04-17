@@ -14,7 +14,7 @@ export class Editor {
 
   constructor(private _viewer: Viewer) {
     this.selectService = new SelectService(_viewer, this);
-    this.transfromService = new TransformService(_viewer);
+    this.transfromService = new TransformService(_viewer, this);
 
     this._services = [this.selectService];
 

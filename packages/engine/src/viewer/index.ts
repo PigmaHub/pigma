@@ -1,1 +1,1 @@
-export * from "./Viewer";
+export * from "./ViewerNew";
