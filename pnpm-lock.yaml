@@ -72,6 +72,10 @@ importers:
         version: link:../observable
 
   packages/engine:
+    dependencies:
+      pixi-viewport:
+        specifier: ^6.0.3
+        version: 6.0.3(pixi.js@8.9.1)
     devDependencies:
       '@pigma/core':
         specifier: workspace:*
@@ -840,6 +844,11 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
+  pixi-viewport@6.0.3:
+    resolution: {integrity: sha512-2+qPJ0/n+8hQYhWvY+795+x9y3MiUrCOWacK0DY53whowWaGdx9iDocy7z1pBwjkZhC52YvrJQuZKK0sdVLtBw==}
+    peerDependencies:
+      pixi.js: '>=8'
+
   pixi.js@8.9.1:
     resolution: {integrity: sha512-2vF5Yu9WC/83ly2tCGkjb+ZGnrr+vlKtZezmD0AmJEQoYZO5nL94806l+PVcJBKW6qrF0YHtbh0ubb6CB7/8Rg==}
 
@@ -1593,6 +1602,10 @@ snapshots:
   parse-svg-path@0.1.2: {}
 
   picocolors@1.1.1: {}
+
+  pixi-viewport@6.0.3(pixi.js@8.9.1):
+    dependencies:
+      pixi.js: 8.9.1
 
   pixi.js@8.9.1:
     dependencies:

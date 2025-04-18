@@ -56,6 +56,7 @@ export class Application {
     this.cleaners.length = 0;
     this._viewer?.dispose();
     this._db?.dispose();
+    this._editor?.dispose();
   }
 
   private register() {
