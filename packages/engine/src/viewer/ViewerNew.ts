@@ -19,6 +19,9 @@ export class Viewer {
   get app(): PXApplication {
     return this._app;
   }
+  get RootContainer(): Container {
+    return this.viewportControl.viewport;
+  }
 
   get viewportControl(): ViewportControl {
     if (!this._viewportControl) {
@@ -42,15 +45,16 @@ export class Viewer {
 
     this.toolLayer = new Container({
       zIndex: ZIndex.TOOL_LAYER,
+      label: "toolLayer",
     });
 
-    this._app.stage.addChild(this.toolLayer);
+    this.app.stage.addChild(this.toolLayer);
 
     this.register();
   }
 
   append(object: Container) {
-    this.viewportControl.viewport.addChild(object);
+    this.RootContainer.addChild(object);
   }
 
   append2Layer(object: Container) {

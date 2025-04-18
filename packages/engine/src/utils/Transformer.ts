@@ -285,7 +285,7 @@ export class Transformer extends Container {
       if (!this.target || handleData.dragging) return;
 
       handleData.targetStart = this.target.position.clone();
-      handleData.downGlobal = event.global.clone();
+      handleData.downGlobal = event.client.clone();
       handleData.dragDistance = 0;
       handleData.dragging = true;
       handleData.startBounds = this.target.getBounds().rectangle;
@@ -298,12 +298,12 @@ export class Transformer extends Container {
       const upHandler = (e: PointerEvent) => {
         this.onMouseUp(e, handleData);
         // 移除全局事件监听器
-        window.removeEventListener('pointermove', moveHandler);
-        window.removeEventListener('pointerup', upHandler);
+        window.removeEventListener("pointermove", moveHandler);
+        window.removeEventListener("pointerup", upHandler);
       };
-      
-      window.addEventListener('pointermove', moveHandler);
-      window.addEventListener('pointerup', upHandler);
+
+      window.addEventListener("pointermove", moveHandler);
+      window.addEventListener("pointerup", upHandler);
     });
 
     const handleMoveUp = (event: any) => {
