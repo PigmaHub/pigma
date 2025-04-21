@@ -1,3 +1,4 @@
+import { Button } from "@pigma/ui/components/button";
 import { FC, useState } from "react";
 
 interface RightPanelProps {}
@@ -9,6 +10,9 @@ export const RightPanel: FC<RightPanelProps> = () => {
 
   return (
     <div className="w-[260px] h-full bg-[#2c2c2c] text-white flex flex-col border-l border-[#444]">
+      <Button>测试</Button>
+      <Button variant="secondary">测试</Button>
+      <Button variant="destructive">测试</Button>
       {/* 顶部标签栏 */}
       <div className="flex border-b border-[#444]">
         <button
