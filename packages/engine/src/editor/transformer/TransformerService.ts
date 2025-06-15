@@ -38,4 +38,7 @@ export class TransformService implements EditorService {
   dispose() {
     //
   }
+  update() {
+    this.transformer.update();
+  }
 }

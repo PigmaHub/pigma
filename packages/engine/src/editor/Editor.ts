@@ -52,6 +52,14 @@ export class Editor {
     this.selectService.onSelectObservable.add((data) => {
       this.transfromService.do(data.objects);
     });
+
+    this._viewer.viewportControl.onZoomObservable.add((data) => {
+      this.transfromService.update();
+    });
+
+    this._viewer.viewportControl.onDragObservable.add((data) => {
+      this.transfromService.update();
+    });
   }
   dispose() {
     //

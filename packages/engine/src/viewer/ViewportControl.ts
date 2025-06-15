@@ -1,5 +1,7 @@
+import { Observable } from "@pigma/observable";
 import { Viewport } from "pixi-viewport";
-import { Application, Container, Ticker } from "pixi.js";
+import type { MovedEvent, ZoomedEvent } from "pixi-viewport/dist/types";
+import { Application, Container } from "pixi.js";
 
 /**
  * ViewportControl class to manage scene dragging and zooming using pixi-viewport.
@@ -7,12 +9,10 @@ import { Application, Container, Ticker } from "pixi.js";
 export class ViewportControl {
   viewport: Viewport;
   private app: Application;
+  onZoomObservable = new Observable<ZoomedEvent>();
+  onDragObservable = new Observable<MovedEvent>();
 
-  constructor(
-    app: Application,
-    worldWidth: number = 2000,
-    worldHeight: number = 2000
-  ) {
+  constructor(app: Application) {
     this.app = app;
 
     // Create viewport
@@ -54,6 +54,14 @@ export class ViewportControl {
 
     // Set initial position to center
     // this.viewport.moveCenter(worldWidth / 2, worldHeight / 2);
+
+    this.viewport.on("zoomed", (event: ZoomedEvent) => {
+      this.onZoomObservable.notifyObservers(event);
+    });
+
+    this.viewport.on("moved", (event) => {
+      this.onDragObservable.notifyObservers(event);
+    });
   }
 
   /**
@@ -121,5 +129,7 @@ export class ViewportControl {
   public destroy(): void {
     this.viewport.destroy();
     this.app.stage.removeChild(this.viewport);
+    this.onZoomObservable.clear();
+    this.onDragObservable.clear();
   }
 }
