@@ -5,6 +5,7 @@ import { Editor } from "./editor/Editor";
 import { Container, extensions } from "pixi.js";
 import { MetadataMixin } from "./utils/MetadataMin";
 import { createAbortablePromise } from "./utils/promise";
+import "pixi.js/math-extras";
 
 extensions.mixin(Container, MetadataMixin);
 

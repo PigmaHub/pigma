@@ -22,6 +22,8 @@ export class ViewportControl {
       events: app.renderer.events,
     });
 
+    this.viewport.label = "viewport";
+
     // Add viewport to stage
     app.stage.addChild(this.viewport);
 

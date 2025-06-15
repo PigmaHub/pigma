@@ -1,5 +1,5 @@
 import { Observable } from "@pigma/observable";
-import { Point } from "pixi.js";
+import { Matrix, Point } from "pixi.js";
 import { Rectangle, Container, Graphics } from "pixi.js";
 
 // Helper functions
@@ -339,9 +339,19 @@ export class Transformer extends Container {
   private onMouseMove(event: PointerEvent, handleData: HandleData) {
     if (!handleData.dragging) return;
 
+    const { scale } = this.target!.worldTransform.decompose({
+      position: new Point(),
+      scale: new Point(),
+      skew: new Point(),
+      rotation: 0,
+      pivot: new Point(),
+    });
+
+    const clientPoint = new Point(event.clientX, event.clientY);
+
     const moveDelta = new Point(
-      event.clientX - (handleData.downGlobal?.x || 0),
-      event.clientY - (handleData.downGlobal?.y || 0)
+      (clientPoint.x - (handleData.downGlobal?.x || 0)) / scale.x,
+      (clientPoint.y - (handleData.downGlobal?.y || 0)) / scale.y
     );
 
     if (this.boundary && handleData.startBounds && this.target) {

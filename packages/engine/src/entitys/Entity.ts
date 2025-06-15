@@ -44,10 +44,15 @@ export class Entity extends BaseObject {
 
   get ObjectContainer() {
     if (!this._container) {
-      this._container = this.init();
+      this._container = new Container();
+      this._container.label = this._name;
       this._container.setMetadataItem("OBJECT", this);
       this._container.setMetadataItem("OBJECT_TYPE", ObjectType.ROOT);
+
+      const object = this.init();
+      this._container.addChild(object);
     }
+
     return this._container;
   }
   init() {
