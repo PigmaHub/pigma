@@ -4,24 +4,33 @@ import { SelectService } from "./select/SelectControl";
 import { EditorStatus } from "./types";
 import type { EditorService } from "./service";
 import { TransformService } from "./transformer/TransformerService";
+import { GetPointService } from "./GetPointService";
 
 export class Editor {
   status = EditorStatus.IDLE;
 
   selectService: SelectService;
   transfromService: TransformService;
+  getPointService: GetPointService;
   private _services: EditorService[] = [];
 
   constructor(private _viewer: Viewer) {
     this.selectService = new SelectService(_viewer, this);
     this.transfromService = new TransformService(_viewer, this);
+    this.getPointService = new GetPointService(this, _viewer);
 
-    this._services = [this.selectService];
+    this._services = [this.getPointService, this.selectService];
 
     this._register();
   }
 
   setStatus(status: EditorStatus) {
+    if (status === EditorStatus.GET_POINT) {
+      this._viewer.RootContainer.cursor = "crosshair";
+    } else {
+      this._viewer.RootContainer.cursor = "default";
+    }
+
     this.status |= status;
   }
   containStatus(status: EditorStatus) {

@@ -1,11 +1,13 @@
 import { Application, Rect } from "@pigma/engine";
 import { useEffect, useRef, useState } from "react";
+import { useAppContext } from "../../contexts/app-context";
 import { Toolbar } from "../toolbar";
 
 export function Designer() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [activeTool, setActiveTool] = useState<string>("select");
+  const { updateEngine } = useAppContext();
 
   let app: Application = null!;
 
@@ -21,6 +23,8 @@ export function Designer() {
         en.Position = { x: 100, y: 100 };
       });
     }, 10);
+
+    updateEngine(app);
 
     return () => {
       clearTimeout(timer);

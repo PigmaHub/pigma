@@ -3,7 +3,9 @@
 	"formatter": {
 		"enabled": true,
 		"formatWithErrors": false,
-		"includes": ["**"],
+		"includes": [
+			"**"
+		],
 		"attributePosition": "auto",
 		"indentStyle": "tab",
 		"indentWidth": 2,
@@ -21,7 +23,13 @@
 			"trailingCommas": "all"
 		}
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
 	"json": {
 		"formatter": {
 			"trailingCommas": "none"

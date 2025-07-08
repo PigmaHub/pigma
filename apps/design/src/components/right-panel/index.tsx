@@ -1,5 +1,7 @@
+import { Rect } from "@pigma/engine";
 import { Button } from "@pigma/ui/components/button";
 import { FC, useState } from "react";
+import { useAppContext } from "../../contexts/app-context";
 
 interface RightPanelProps {}
 
@@ -8,9 +10,32 @@ export const RightPanel: FC<RightPanelProps> = () => {
     "design"
   );
 
+  const { engine } = useAppContext();
+
+  const handleTest = async () => {
+    let res = await engine.Editor.getPointService.start();
+    console.log("res: ", res);
+    const p1 = res?.point;
+
+    res = await engine.Editor.getPointService.start();
+    const p2 = res?.point;
+
+    console.log("p1: ", p1);
+    console.log("p2: ", p2);
+
+    if (!p1 || !p2) return;
+
+    const en = engine.append(new Rect());
+
+    en.Width = Math.abs(p2.x - p1.x);
+    en.Height = Math.abs(p2.y - p1.y);
+
+    en.Position = { x: Math.min(p1.x, p2.x), y: Math.min(p1.y, p2.y) };
+  };
+
   return (
     <div className="w-[260px] h-full bg-[#2c2c2c] text-white flex flex-col border-l border-[#444]">
-      <Button>测试</Button>
+      <Button onClick={handleTest}>测试</Button>
       <Button variant="secondary">测试</Button>
       <Button variant="destructive">测试</Button>
       {/* 顶部标签栏 */}
