@@ -7,6 +7,8 @@ export class Rect extends Shape {
 	applyShape() {
 		if (!this.Master) return;
 
+		this.Master.clear();
+
 		if (this._styles.cornerRadius) {
 			this.Master.rect(0, 0, this._width, this._height);
 		} else {

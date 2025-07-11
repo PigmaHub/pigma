@@ -1,4 +1,4 @@
-import { Rect } from "@pigma/engine";
+import { Point, Rect } from "@pigma/engine";
 import { Button } from "@pigma/ui/components/button";
 import { FC, useState } from "react";
 import { useAppContext } from "../../contexts/app-context";
@@ -13,24 +13,48 @@ export const RightPanel: FC<RightPanelProps> = () => {
   const { engine } = useAppContext();
 
   const handleTest = async () => {
-    let res = await engine.Editor.getPointService.start();
-    console.log("res: ", res);
-    const p1 = res?.point;
+    let rect: Rect;
+    let p1: Point;
+    let p2: Point;
 
-    res = await engine.Editor.getPointService.start();
-    const p2 = res?.point;
+    const updateRect = (p1: Point, p2: Point) => {
+      if (!rect) return;
+      rect.Width = Math.abs(p2.x - p1.x);
+      rect.Height = Math.abs(p2.y - p1.y);
+      rect.Position = { x: Math.min(p1.x, p2.x), y: Math.min(p1.y, p2.y) };
+    };
 
-    console.log("p1: ", p1);
-    console.log("p2: ", p2);
+    let res = await engine.Editor.getPointService.start({
+      allowHold: true,
+      onPointerDown: (event) => {
+        p1 = event.point;
+        p2 = event.point.add(new Point(1, 1));
+        rect = engine.append(new Rect()) as Rect;
+        updateRect(p1, p2);
+      },
+      onPointerMove: (event) => {
+        console.log("event: ", event);
+        p2 = event.point;
+        updateRect(p1, p2);
+      },
+    });
+    // console.log("res: ", res);
+    // const p1 = res?.point;
 
-    if (!p1 || !p2) return;
+    // res = await engine.Editor.getPointService.start();
+    // const p2 = res?.point;
 
-    const en = engine.append(new Rect());
+    // console.log("p1: ", p1);
+    // console.log("p2: ", p2);
 
-    en.Width = Math.abs(p2.x - p1.x);
-    en.Height = Math.abs(p2.y - p1.y);
+    // if (!p1 || !p2) return;
 
-    en.Position = { x: Math.min(p1.x, p2.x), y: Math.min(p1.y, p2.y) };
+    // const en = engine.append(new Rect());
+
+    // en.Width = Math.abs(p2.x - p1.x);
+    // en.Height = Math.abs(p2.y - p1.y);
+
+    // en.Position = { x: Math.min(p1.x, p2.x), y: Math.min(p1.y, p2.y) };
   };
 
   return (

@@ -13,7 +13,7 @@ export type ApplicationOptions = {
 	container: HTMLElement;
 };
 
-export class Application {
+export class Pigma {
 	private readonly container: HTMLElement;
 	private _viewer: Viewer;
 	private _editor: Editor;

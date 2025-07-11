@@ -1,4 +1,4 @@
-import { Application, Rect } from "@pigma/engine";
+import { Pigma, Rect } from "@pigma/engine";
 import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../contexts/app-context";
 import { Toolbar } from "../toolbar";
@@ -9,10 +9,10 @@ export function Designer() {
   const [activeTool, setActiveTool] = useState<string>("select");
   const { updateEngine } = useAppContext();
 
-  let app: Application = null!;
+  let app: Pigma = null!;
 
   useEffect(() => {
-    app = new Application({
+    app = new Pigma({
       container: canvasRef.current!,
     });
 

@@ -10,3 +10,10 @@ export enum EditorStatus {
 export interface PointServiceResult {
 	point: Point;
 }
+
+export type GetPointServiceOption = {
+	/** Whether holding is allowed to maintain the get state */
+	allowHold?: boolean;
+	onPointerDown?: (event: { point: Point }) => void;
+	onPointerMove?: (event: { point: Point }) => void;
+};

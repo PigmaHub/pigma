@@ -1,9 +1,9 @@
-import { Application } from "@pigma/engine";
+import { Pigma } from "@pigma/engine";
 import { createContext, FC, ReactNode, useContext, useState } from "react";
 
 interface AppContextType {
-  engine: Application;
-  updateEngine: (engine: Application) => void;
+  engine: Pigma;
+  updateEngine: (engine: Pigma) => void;
 }
 
 export const AppContext = createContext<AppContextType>(null!);
@@ -11,9 +11,9 @@ export const AppContext = createContext<AppContextType>(null!);
 export const AppContextProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [engine, setEngine] = useState<Application>(null!);
+  const [engine, setEngine] = useState<Pigma>(null!);
 
-  const updateEngine = (engine: Application) => {
+  const updateEngine = (engine: Pigma) => {
     setEngine(engine);
   };
 
