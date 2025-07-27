@@ -59,7 +59,7 @@ export const RightPanel: FC<RightPanelProps> = () => {
 
   return (
     <div className="w-[260px] h-full bg-[#2c2c2c] text-white flex flex-col border-l border-[#444]">
-      <Button onClick={handleTest}>测试</Button>
+      <Button onClick={handleTest}>画矩形</Button>
       <Button variant="secondary">测试</Button>
       <Button variant="destructive">测试</Button>
       {/* 顶部标签栏 */}
